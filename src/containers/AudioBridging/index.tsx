@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   StatusBar,
@@ -11,10 +11,14 @@ import {styles} from './styles';
 import {NativeModules} from 'react-native';
 const {VoiceChangingModule} = NativeModules;
 import 'react-native-gesture-handler';
+import {Button} from '../../components/Button';
 
-interface IAudioBridging {}
+interface IAudioBridging {
+  navigation: {navigate: (routeName: string) => void};
+}
 
 export const AudioBridging = (props: IAudioBridging): JSX.Element => {
+  const [boolVal, setBoolVal] = useState(false);
   const audioTrackURL =
     'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3';
 
@@ -25,6 +29,7 @@ export const AudioBridging = (props: IAudioBridging): JSX.Element => {
   };
 
   const changeToChild = () => {
+    setBoolVal(!boolVal);
     Platform.OS === 'android'
       ? VoiceChangingModule.changeVoiceToChild(audioTrackURL)
       : VoiceChangingModule.changeVoiceToChild();
@@ -41,6 +46,13 @@ export const AudioBridging = (props: IAudioBridging): JSX.Element => {
       ? VoiceChangingModule.slowDownVoice(audioTrackURL)
       : VoiceChangingModule.slowDownVoice();
   };
+
+  function routeToNext() {
+    console.log('here');
+    props?.navigation?.navigate('Optimization');
+  }
+
+  console.log('parent re-renders');
 
   return (
     <View style={styles.container}>
@@ -89,6 +101,7 @@ export const AudioBridging = (props: IAudioBridging): JSX.Element => {
           <Text>Slow</Text>
         </TouchableOpacity>
       </View>
+      <Button title="Optimizations" onButtonPress={routeToNext} />
     </View>
   );
 };
